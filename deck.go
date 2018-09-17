@@ -47,3 +47,8 @@ func newDeck() deck {
 	}
 	return cards
 }
+
+// return two decks
+func deal(d deck, handSize int) (deck, deck) {
+	return d[:handSize], d[handSize:]
+}
