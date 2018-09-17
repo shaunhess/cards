@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"strings"
 )
 
 /*
@@ -19,6 +22,13 @@ func (d deck) print() {
 	for _, card := range d {
 		fmt.Println(card)
 	}
+}
+
+/*
+Receiver; converts deck to a single string
+*/
+func (d deck) toString() string {
+	return strings.Join([]string(d), ",")
 }
 
 func newDeck() deck {
@@ -51,4 +61,22 @@ func newDeck() deck {
 // return two decks
 func deal(d deck, handSize int) (deck, deck) {
 	return d[:handSize], d[handSize:]
+}
+
+// Save deck to a file on disk
+func (d deck) saveToFile(filename string) error {
+	return ioutil.WriteFile(filename, []byte(d.toString()), 0666)
+}
+
+// Load deck from file on disk
+func newDeckFromFile(filename string) deck {
+	bs, err := ioutil.ReadFile(filename)
+	if err != nil {
+		// Log error and quit application
+		fmt.Println("Error:", err)
+		os.Exit(1)
+	}
+
+	s := strings.Split(string(bs), ",")
+	return deck(s)
 }
